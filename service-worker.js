@@ -20,6 +20,12 @@ const cacheAssets = [
   '/views/niveles.html',
   '/views/instalacion.html',
   '/views/contacto.html',
+  '/assets/dani.jpg',
+  '/assets/pasodos.jpg',
+  '/assets/pasotres.jpg',
+  '/assets/pasocuatro.jpg',
+
+  
 
 
 ];
@@ -38,15 +44,38 @@ self.addEventListener('install', (e) => {
 // Activación del Service Worker
 self.addEventListener('activate', (e) => {
   console.log('Service Worker: Activado');
+  // Limpiar cachés antiguos
+  e.waitUntil(
+    caches.keys().then((cacheNames) => {
+      return Promise.all(
+        cacheNames.map((cache) => {
+          if (cache !== cacheName) {
+            console.log('Service Worker: Limpiando caché', cache);
+            return caches.delete(cache);
+          }
+        })
+      );
+    })
+  );
 });
+
 
 // Fetch (recuperar recursos desde cache o red)
 self.addEventListener('fetch', (e) => {
   console.log('Service Worker: Fetching', e.request.url);
   e.respondWith(
-    caches.match(e.request).then((res) => res || fetch(e.request))
+    caches.match(e.request).then((res) => {
+      return res || fetch(e.request).then((response) => {
+        // Agregar recursos al caché si no están presentes
+        return caches.open(cacheName).then((cache) => {
+          cache.put(e.request, response.clone());
+          return response;
+        });
+      });
+    })
   );
 });
+
 
 // Registrar el Service Worker
 if ('serviceWorker' in navigator) {
@@ -57,3 +86,4 @@ if ('serviceWorker' in navigator) {
       .catch((err) => console.log('Error al registrar el Service Worker:', err));
   });
 }
+

@@ -30,3 +30,29 @@ nav.menu a:hover {
 main#app {
   padding: 20px;
 }
+
+
+.game-list {
+  margin-top: 20px;
+}
+
+.card {
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.card img {
+  height: 200px;
+  object-fit: cover;
+}
+
+.card .btn {
+  background-color: #ff0000;
+  border: none;
+}
+
+.card .btn:hover {
+  background-color: #cc0000;
+}
+
